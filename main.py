@@ -21,12 +21,14 @@ class Board:
                 row.append('-')
             self.board.append(row)
         # make the first move as specified in the project document
-        self.make_move(3, 4)
-        self.make_move(3, 3)
+        # project doc is indexed from 1, while we are indexing at 0 so subtract one
+        self.make_move(3-1, 4-1)
+        self.make_move(3-1, 3-1)
 
     # make move
     # has the current player make a move. Mark the requested space and then swap player
     def make_move(self, row, column):
+
         self.board[row][column] = self.current_player
         self.swap_player_turn()
 
@@ -35,9 +37,9 @@ class Board:
     # make move will auto swap after marking, so this should not be called outside of make_move
     def swap_player_turn(self):
         if self.current_player == 'x':
-            return self.current_player == 'o'
+            self.current_player = 'o'
         else:
-            return self.current_player == 'x'
+            self.current_player = 'x'
 
     # is_board_filled
     # check if there is a legal move that can be made
