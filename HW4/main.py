@@ -11,6 +11,7 @@ class Board:
     current_player = 'x'
     number_of_rows = 5
     number_of_columns = 6
+    turn_number = 1
 
     # reset_board
     # sets the game board to its starting state described in the project document
@@ -20,6 +21,8 @@ class Board:
             for j in range(self.number_of_columns):
                 row.append('-')
             self.board.append(row)
+        # reset number of turns to 0
+        self.turn_number = 1
         # make the first move as specified in the project document
         # project doc is indexed from 1, while we are indexing at 0 so subtract one
         self.make_move(3-1, 4-1)
@@ -28,9 +31,9 @@ class Board:
     # make move
     # has the current player make a move. Mark the requested space and then swap player
     def make_move(self, row, column):
-
         self.board[row][column] = self.current_player
         self.swap_player_turn()
+        self.turn_number += 1
 
     # swap player turn
     # change current player turn
@@ -59,6 +62,9 @@ class Board:
     def print_board(self):
         # used to count row number
         c = 1
+        # print turn info
+        print("\n===============================\nCurrent Turn Number is: " + str(self.turn_number) +
+              "\nCurrent Player is: " + self.current_player + "\n===============================")
         # print first row which are column headers
         print(f"|  ", end='')
         for column in range(self.number_of_columns):
@@ -73,7 +79,6 @@ class Board:
             print(f"| ")
             c += 1
 
-# make move
 
 # evaluation function
 
@@ -84,6 +89,7 @@ class Board:
 def main():
     game_board = Board()
     game_board.print_board()
+    game_board.make_move()
 
 
 if __name__ == "__main__":
