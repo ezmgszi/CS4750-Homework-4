@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  hw4-1:
+    container_name: hw4-scenerio-1
+    build:
+      dockerfile: Dockerfile
+      context: ./HW4
+#    environment:
+#      - START_LOCATION=2,2
+#      - DIRT_LOCATIONS=1,2|2,4|3,5
