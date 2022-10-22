@@ -56,22 +56,33 @@ class Board:
     # prints out the board, so we can see current game state
     def print_board(self):
         # used to count row number
-        c = 0
+        c = 1
         # print first row which are column headers
-        print(f"| ", end='')
+        print(f"|  ", end='')
         for column in range(self.number_of_columns):
-            print(f"| {column + 1}", end='')
-        print("| ")
+            print(f" | {column + 1}", end='')
+        print(" | ")
 
         for row in self.board:
             # print row header
-            print(f"| {c + 1} ", end='')
+            print(f"| {c} ", end='')
             for space in row:
-                print(f"|{space}", end='')
+                print(f"| {space} ", end='')
             print(f"| ")
+            c += 1
 
 # make move
 
 # evaluation function
 
 # minmax function
+
+
+# main
+def main():
+    game_board = Board()
+    game_board.print_board()
+
+
+if __name__ == "__main__":
+    main()
