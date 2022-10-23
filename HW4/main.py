@@ -87,6 +87,73 @@ class Board:
             print(f"| ")
             c += 1
 
+    def available_moves(self):
+      list_moves = []
+      for rows in self.board:
+        for cols in rows:
+          if self.board[rows][cols] == 'X' or self.board[rows][cols] == 'O':
+            if not cols-1 < 0:
+              if self.board[rows][cols-1] == '-':
+                move_string = rows+","+cols-1
+                if move_string not in list_moves:
+                  list_moves.append(move_string)
+            
+            if not rows+1 > self.number_of_rows-1:
+              if cols-1 < 0:
+                if self.board[rows+1][cols-1] == '-':
+                  move_string = rows+1+","+cols-1
+                  if move_string not in list_moves:
+                    list_moves.append(move_string)
+            
+            if rows-1 < 0:
+              if self.board[rows-1][cols] == '-':
+                move_string = rows-1+","+cols
+                if move_string not in list_moves:
+                  list_moves.append(move_string)
+            
+            if rows-1 < 0:
+              if cols+1 > self.number_of_columns-1:
+                if self.board[rows-1][cols+1] == '-':
+                  move_string = rows-1+","+cols+1
+                  if move_string not in list_moves:
+                    list_moves.append(move_string)
+            
+            if rows-1 < 0:
+              if cols-1 < 0:
+                if self.board[rows-1][cols-1] == '-':
+                  move_string = rows-1+","+cols-1
+                  if move_string not in list_moves:
+                    list_moves.append(move_string)
+            
+            if cols+1 > self.number_of_columns-1:
+              if self.board[rows][cols+1] == '-':
+                move_string = rows+","+cols+1
+                if move_string not in list_moves:
+                  list_moves.append(move_string)
+            
+            if rows+1 > self.number_of_rows-1:
+              if self.board[rows+1][cols] == '-':
+                move_string = rows+1+","+cols
+                if move_string not in list_moves:
+                  list_moves.append(move_string)
+            
+            if rows+1 > self.number_of_rows-1:
+              if cols+1 > self.number_of_columns-1:
+                if self.board[rows+1][cols+1] == '-':
+                  move_string = rows+1+","+cols+1
+                  if move_string not in list_moves:
+                    list_moves.append(move_string)
+      return list_moves
+
+    def minmax(self):
+      moves = []
+      scores = []
+
+      for m in self.available_moves():
+
+
+
+
 
 # evaluation function
 # determines heuristic value of the given state based on the function given in the project documentation
@@ -335,7 +402,6 @@ def check_diagonals_left(board_state, row, column):
     return check_return_heuristic(number_in_row, open_status, same_player_status)
 
 
-# minmax function
 
 
 # main
