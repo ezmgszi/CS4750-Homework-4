@@ -61,9 +61,10 @@ class Board:
         return True
 
     # get_value_at
-    # returns value of requsted position on board
+    # returns value of requested position on board
     def get_value_at(self, row, column):
         return self.board[row][column]
+
     # print_board
     # prints out the board, so we can see current game state
     def print_board(self):
@@ -129,7 +130,7 @@ def evaluate_state(board_state):
 
 
 # determine heuristic value of current row u
-# sed by check_horizontals check_verticals check_diagonals in order to avoid repeating it each time
+# used by check_horizontals check_verticals check_diagonals in order to avoid repeating it each time
 def check_return_heuristic( number_in_row, open_status, same_player_status):
     print("Values we are getting in check return are:\nnumber_in_rows: " + str(number_in_row) + "\nopen_status: "
           + str(open_status) + "\nsame_player_status: "+str(same_player_status))
@@ -250,7 +251,7 @@ def check_diagonals_right(board_state, row, column):
     open_status = 0
     # if space before is - then it is open, and we track this
     # if row is zero and nothing is in front of it
-    if row > 0 or column > 0:
+    if row > 0 and column > 0:
         if board_state.board[row-1][column-1] == '-':
             open_status += 1
     print("open status at start is: " + str(open_status))
@@ -259,7 +260,7 @@ def check_diagonals_right(board_state, row, column):
     print(board_state.board[row - 1][column - 1])
     print(board_state.board[row][column])
     print(board_state.board[row - 1][column - 1] == board_state.board[row][column])
-    if row > 0 or column > 0:
+    if row > 0 and column > 0:
         if board_state.board[row - 1][column - 1] == board_state.board[row][column]:
             print("we are entering been there done that")
             return 0
@@ -296,14 +297,13 @@ def check_diagonals_left(board_state, row, column):
     open_status = 0
     # if space before is - then it is open, and we track this
     # if row is zero and nothing is in front of it
-    print( board_state.board[row-1][column+1])
-    if row > 0 or column < board_state.number_of_columns:
+    if row > 0 and column < board_state.number_of_columns-1:
         if board_state.board[row-1][column+1] == '-':
             open_status += 1
     print("open status at start is: " + str(open_status))
     # if space before is same as current space, then we have already accounted for it being in a row
     # and do not need to run this function again (check to make sure we are not checking out of bounds)
-    if row > 0 or column > 0:
+    if row > 0 and column < board_state.number_of_columns-1:
         if board_state.board[row - 1][column + 1] == board_state.board[row][column]:
             print("we are entering been there done that")
             return 0
@@ -341,7 +341,7 @@ def check_diagonals_left(board_state, row, column):
 # main
 def main():
     game_board = Board()
-    # #test state from project file
+    #test state from project file
     # game_board.current_player ='O'
     # game_board.make_move(1, 2)
     # game_board.make_move(1, 3)
@@ -357,8 +357,13 @@ def main():
     # game_board.make_move(2, 3)
     # game_board.current_player = 'X'
     # game_board.print_board()
-    
+
+    print(game_board.board)
+
+    game_board.board=[['-', '-', 'O', 'O', 'O', '-'], ['-', '-', '-', 'X', 'X', 'O'], ['-', '-', 'O', 'X', '-', '-'], ['-', '-', 'O', 'X', '-', '-'], ['-', '-', '-', 'X', '-', 'X']]
+    game_board.print_board()
     value_of_state = evaluate_state(game_board)
+    print(game_board.current_player)
     print(" \n\n" + str(value_of_state))
 
 
