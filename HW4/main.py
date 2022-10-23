@@ -360,7 +360,7 @@ def main():
 
     print(game_board.board)
 
-    game_board.board=[['-', '-', 'O', 'O', 'O', '-'], ['-', '-', '-', 'X', 'X', 'O'], ['-', '-', 'O', 'X', '-', '-'], ['-', '-', 'O', 'X', '-', '-'], ['-', '-', '-', 'X', '-', 'X']]
+    game_board.board=[['X', '-', 'O', 'O', 'O', 'X'], ['-', '-', '-', 'X', 'X', 'O'], ['-', '-', 'O', 'X', '-', '-'], ['-', '-', 'O', 'X', '-', '-'], ['O', '-', '-', '-', '-', 'X']]
     game_board.print_board()
     value_of_state = evaluate_state(game_board)
     print(game_board.current_player)
