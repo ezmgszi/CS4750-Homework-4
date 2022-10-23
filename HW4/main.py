@@ -1,3 +1,7 @@
+#imports
+import copy
+
+
 # board class
 class Board:
     # constructor
@@ -33,7 +37,7 @@ class Board:
     # has the current player make a move. Mark the requested space and then swap player
     def make_move(self, row, column):
         self.print_board()
-        print("*Player " + self.current_player + " is making the move [" + str(row+1) + "," + str(column+1) + "]")
+        print("*Player " + str(self.current_player) + " is making the move [" + str(row+1) + "," + str(column+1) + "]")
         self.board[row][column] = self.current_player
         self.swap_player_turn()
         self.turn_number += 1
@@ -88,40 +92,42 @@ class Board:
             c += 1
 
     def available_moves(self):
-      list_moves = []
-      for rows in self.board:
-        for cols in rows:
-          if self.board[rows][cols] == 'X' or self.board[rows][cols] == 'O':
-            if not cols-1 < 0:
-              if self.board[rows][cols-1] == '-':
-                move_string = rows+","+cols-1
-                if move_string not in list_moves:
-                  list_moves.append(move_string)
+        list_moves = []
+        rows = 0
+        cols = 0
+        for row_list in self.board:
+            for space in row_list:
+                if cols == 'X' or cols == 'O':
+                    if not cols-1 < 0:
+                        if self.board[rows][cols-1] == '-':
+                            move_string = str(rows)+","+str(cols-1)
+                            if move_string not in list_moves:
+                                list_moves.append(move_string)
             
             if not rows+1 > self.number_of_rows-1:
-              if cols-1 < 0:
-                if self.board[rows+1][cols-1] == '-':
-                  move_string = rows+1+","+cols-1
-                  if move_string not in list_moves:
-                    list_moves.append(move_string)
+                if cols-1 < 0:
+                    if self.board[rows+1][cols-1] == '-':
+                        move_string = str(rows+1)+","+str(cols-1)
+                        if move_string not in list_moves:
+                            list_moves.append(move_string)
             
             if rows-1 < 0:
               if self.board[rows-1][cols] == '-':
-                move_string = rows-1+","+cols
+                move_string = str(rows-1)+","+str(cols)
                 if move_string not in list_moves:
                   list_moves.append(move_string)
             
             if rows-1 < 0:
               if cols+1 > self.number_of_columns-1:
                 if self.board[rows-1][cols+1] == '-':
-                  move_string = rows-1+","+cols+1
+                  move_string = str(rows-1)+","+str(cols+1)
                   if move_string not in list_moves:
                     list_moves.append(move_string)
             
             if rows-1 < 0:
               if cols-1 < 0:
                 if self.board[rows-1][cols-1] == '-':
-                  move_string = rows-1+","+cols-1
+                  move_string = str(rows-1)+","+str(cols-1)
                   if move_string not in list_moves:
                     list_moves.append(move_string)
             
@@ -133,23 +139,36 @@ class Board:
             
             if rows+1 > self.number_of_rows-1:
               if self.board[rows+1][cols] == '-':
-                move_string = rows+1+","+cols
+                move_string = str(rows+1)+","+str(cols)
                 if move_string not in list_moves:
                   list_moves.append(move_string)
             
             if rows+1 > self.number_of_rows-1:
               if cols+1 > self.number_of_columns-1:
                 if self.board[rows+1][cols+1] == '-':
-                  move_string = rows+1+","+cols+1
+                  move_string = str(rows+1)+","+str(cols)+1
                   if move_string not in list_moves:
                     list_moves.append(move_string)
-      return list_moves
+        return list_moves
 
     def minmax(self):
-      moves = []
-      scores = []
+        moves = []
+        scores = []
 
-      for m in self.available_moves():
+        # populate score
+        for m in self.available_moves():
+            print(" --------- " + m)
+            # create possible game state``
+            possible_board = copy.deepcopy(self)
+            # make m move on possible game state
+            possible_board.make_move(m[0], m[1])
+            # get score of possible game state and push it to move
+            scores.append(evaluate_state(possible_board))
+            # push move to move
+            moves.append(m)
+
+        # do min max calculation
+
 
 
 
@@ -407,30 +426,32 @@ def check_diagonals_left(board_state, row, column):
 # main
 def main():
     game_board = Board()
-    #test state from project file
-    # game_board.current_player ='O'
-    # game_board.make_move(1, 2)
-    # game_board.make_move(1, 3)
-    # game_board.make_move(2, 2)
-    # game_board.make_move(3, 2)
-    # game_board.make_move(3, 1)
-    # game_board.make_move(3, 3)
-    # game_board.make_move(3, 4)
-    # game_board.make_move(4, 2)
-    # game_board.current_player = 'X'
-    # game_board.make_move(2, 4)
-    # game_board.current_player = 'O'
-    # game_board.make_move(2, 3)
-    # game_board.current_player = 'X'
-    # game_board.print_board()
-
-    print(game_board.board)
-
-    game_board.board=[['X', '-', 'O', 'O', 'O', 'X'], ['-', '-', '-', 'X', 'X', 'O'], ['-', '-', 'O', 'X', '-', '-'], ['-', '-', 'O', 'X', '-', '-'], ['O', '-', '-', '-', '-', 'X']]
+    # test state from project file
+    game_board.current_player ='O'
+    game_board.make_move(1, 2)
+    game_board.make_move(1, 3)
+    game_board.make_move(2, 2)
+    game_board.make_move(3, 2)
+    game_board.make_move(3, 1)
+    game_board.make_move(3, 3)
+    game_board.make_move(3, 4)
+    game_board.make_move(4, 2)
+    game_board.current_player = 'X'
+    game_board.make_move(2, 4)
+    game_board.current_player = 'O'
+    game_board.make_move(2, 3)
+    game_board.current_player = 'X'
     game_board.print_board()
-    value_of_state = evaluate_state(game_board)
-    print(game_board.current_player)
-    print(" \n\n" + str(value_of_state))
+
+    # print(game_board.board)
+
+    # game_board.board=[['X', '-', 'O', 'O', 'O', 'X'], ['-', '-', '-', 'X', 'X', 'O'], ['-', '-', 'O', 'X', '-', '-'], ['-', '-', 'O', 'X', '-', '-'], ['O', '-', '-', '-', '-', 'X']]
+    # game_board.print_board()
+    # value_of_state = evaluate_state(game_board)
+    # print(game_board.current_player)
+    # print(" \n\n" + str(value_of_state))
+
+    game_board.minmax()
 
 
 if __name__ == "__main__":
