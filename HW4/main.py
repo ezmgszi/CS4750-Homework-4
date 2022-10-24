@@ -158,6 +158,7 @@ class Board:
         moves = []
         scores = []
         depth += 1
+        current_player = self.current_player
 
         # populate score
         for m in self.available_moves():
@@ -170,10 +171,15 @@ class Board:
                 possible_board.current_player = 'O'
             else:
                 possible_board.current_player = 'X'
+
+            if max_depth >= depth:
+              scores = possible_board.minmax(max_depth, depth)
             # get score of possible game state and push it to move
-            scores.append(evaluate_state(possible_board))
+            # scores.append(evaluate_state(possible_board))
             # push move to move
             moves.append(m)
+
+            if possible_board.current_player == current_player:
 
         print("moves: ", moves)
         print("available moves: ", self.available_moves())
