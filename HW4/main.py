@@ -16,7 +16,7 @@ class Board:
     number_of_rows = 5
     number_of_columns = 6
     turn_number = 1
-
+    node_number =0
     # reset_board
     # sets the game board to its starting state described in the project document
     def reset_board(self):
@@ -37,7 +37,7 @@ class Board:
     # has the current player make a move. Mark the requested space and then swap player
     def make_move(self, row, column):
         #self.print_board()
-        print("*Player " + str(self.current_player) + " is making the move [" + str(row+1) + "," + str(column+1) + "]")
+        # print("*Player " + str(self.current_player) + " is making the move [" + str(row+1) + "," + str(column+1) + "]")
         self.board[row][column] = self.current_player
         self.swap_player_turn()
         self.turn_number += 1
@@ -158,11 +158,12 @@ class Board:
       best_move = "-1,-1"
       score = -100000
       depth += 1
+
       current_player = self.current_player
 
       # populate score
       for m in self.available_moves():
-          print(" --------- " + m.split(",")[1])
+          # print(" --------- " + m.split(",")[1])
           # create possible game state``
           possible_board = copy.deepcopy(self)
           # make m move on possible game state
@@ -175,51 +176,63 @@ class Board:
 
           if max_depth >= depth:
             candidate_score = possible_board.minmax(max_depth, depth, passed_turn)
+            # print(score)
             if score < candidate_score:
               score = candidate_score
+              # print(score)
               best_move = m
-          print("best move: ", best_move)
+      # print(score)
+      # print("best move: ", best_move)
+      # print()
       return best_move
               
 
     def minmax(self, max_depth, depth, active_turn):
-      moves = []
-      scores = []
-      depth += 1
-      current_player = self.current_player
-
-      # populate score
-      for m in self.available_moves():
-        #print(" --------- " + m.split(",")[1])
-        # create possible game state``
-        possible_board = copy.deepcopy(self)
-        # make m move on possible game state
-        possible_board.make_move(int(m.split(",")[0]), int(m.split(",")[1]))
-        passed_turn = possible_board.current_player
-        if possible_board.current_player == 'X':
-            possible_board.current_player = 'O'
+        moves = []
+        scores = []
+        depth += 1
+        current_player = self.current_player
+        # print("Current heuristic value of the possible board: " + str(evaluate_state(self, active_turn)))
+        heuristic_value = evaluate_state(self, active_turn)
+        # player
+        passed_turn = self.current_player
+        if self.current_player == 'X':
+            self.current_player = 'O'
         else:
-            possible_board.current_player = 'X'
+            self.current_player = 'X'
+        # populate score
+        if heuristic_value > 900:
+            return heuristic_value
+        if max_depth >= depth and heuristic_value < 1000:
+            for m in self.available_moves():
+                # print(" --------- " + m.split(",")[1])
+                # create possible game state``
+                possible_board = copy.deepcopy(self)
+                # make m move on possible game state
+                possible_board.make_move(int(m.split(",")[0]), int(m.split(",")[1]))
+                # print("we are adding to heuristic values here\n adding : " + str(evaluate_state(possible_board, active_turn))
+                #         + "\n recursive depth iss: " + str(depth) + "Nodes generated: " + str(possible_board.node_number))
+                scores.append(possible_board.minmax(max_depth, depth, passed_turn))
+            # get score of possible game state and push it to move
+        else:
+            return heuristic_value
+        # moves.append(m)
 
-        if max_depth >= depth:
-            scores.append(possible_board.minmax(max_depth, depth, passed_turn))
-        # get score of possible game state and push it to move
-        moves.append(m)
-
-      scores.append(evaluate_state(possible_board, active_turn))
-      # push move to move
-      if active_turn == possible_board.current_player:
+        # print("list of heurisic values calculated TTTT: ", scores,  "\n recursive depth iss: " + str(depth))
+        # push move to move
+        if active_turn == passed_turn:
         # max score
-        return max(scores)
-      else:
-        return min(scores)
+            # heuristic value has all values of possible board states of all possible moves`
+            return max(scores)
+        else:
+            return min(scores)
               # min scores
 
             # if possible_board.current_player == current_player:
 
-        print("moves: ", moves)
-        print("available moves: ", self.available_moves())
-        print("scores: ", scores)
+        # print("moves: ", moves)
+        # print("available moves: ", self.available_moves())
+        # print("scores: ", scores)
 
         # do min max calculation
 
@@ -499,9 +512,6 @@ def main():
     # value_of_state = evaluate_state(game_board)
     # print(game_board.current_player)
     # print(" \n\n" + str(value_of_state))
-
-    print(game_board.initMinMax(2, 0, 'X'))
-
     # game_board.make_move(1, 1)
     # game_board.current_player = 'O'
     #
@@ -509,6 +519,54 @@ def main():
     # value_of_state = evaluate_state(game_board)
     # print(game_board.current_player)
     # print(" \n\n" + str(value_of_state))
+
+    x = game_board.initMinMax(2, 0, game_board.current_player)
+    print(x)
+    print(game_board.print_board())
+    game_board.make_move(int(x.split(",")[0]), int(x.split(",")[1]))
+    print(game_board.print_board())
+
+    # x = game_board.initMinMax(4, 0, game_board.current_player)
+    # print(x)
+    # print(game_board.print_board())
+    # game_board.make_move(int(x.split(",")[0]), int(x.split(",")[1]))
+    # print(game_board.print_board())
+    #
+    # x = game_board.initMinMax(2, 0, game_board.current_player)
+    # print(x)
+    # print(game_board.print_board())
+    # game_board.make_move(int(x.split(",")[0]), int(x.split(",")[1]))
+    # print(game_board.print_board())
+    #
+    # x = game_board.initMinMax(4, 0, game_board.current_player)
+    # print(x)
+    # print(game_board.print_board())
+    # game_board.make_move(int(x.split(",")[0]), int(x.split(",")[1]))
+    # print(game_board.print_board())
+    #
+    # x = game_board.initMinMax(2, 0, game_board.current_player)
+    # print(x)
+    # print(game_board.print_board())
+    # game_board.make_move(int(x.split(",")[0]), int(x.split(",")[1]))
+    # print(game_board.print_board())
+    #
+    # x = game_board.initMinMax(4, 0, game_board.current_player)
+    # print(x)
+    # print(game_board.print_board())
+    # game_board.make_move(int(x.split(",")[0]), int(x.split(",")[1]))
+    # print(game_board.print_board())
+    #
+    # x = game_board.initMinMax(2, 0, game_board.current_player)
+    # print(x)
+    # print(game_board.print_board())
+    # game_board.make_move(int(x.split(",")[0]), int(x.split(",")[1]))
+    # print(game_board.print_board())
+    #
+    # x = game_board.initMinMax(4, 0, game_board.current_player)
+    # print(x)
+    # print(game_board.print_board())
+    # game_board.make_move(int(x.split(",")[0]), int(x.split(",")[1]))
+    # print(game_board.print_board())
 
 
 if __name__ == "__main__":
