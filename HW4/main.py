@@ -93,85 +93,89 @@ class Board:
 
     def available_moves(self):
         list_moves = []
-        rows = 0
-        cols = 0
+        rows = -1
+        cols = -1
         for row_list in self.board:
-            for space in row_list:
-                if cols == 'X' or cols == 'O':
-                    if not cols-1 < 0:
-                        if self.board[rows][cols-1] == '-':
-                            move_string = str(rows)+","+str(cols-1)
-                            if move_string not in list_moves:
-                                list_moves.append(move_string)
-            
-            if not rows+1 > self.number_of_rows-1:
-                if cols-1 < 0:
-                    if self.board[rows+1][cols-1] == '-':
-                        move_string = str(rows+1)+","+str(cols-1)
+          rows += 1
+          cols = -1
+          for space in row_list:
+            cols += 1
+            if space == 'X' or space == 'O':
+                if cols-1 >= 0:
+                    if self.board[rows][cols-1] == '-':
+                        move_string = str(rows)+","+str(cols-1)
                         if move_string not in list_moves:
                             list_moves.append(move_string)
-            
-            if rows-1 < 0:
-              if self.board[rows-1][cols] == '-':
-                move_string = str(rows-1)+","+str(cols)
-                if move_string not in list_moves:
-                  list_moves.append(move_string)
-            
-            if rows-1 < 0:
-              if cols+1 > self.number_of_columns-1:
-                if self.board[rows-1][cols+1] == '-':
-                  move_string = str(rows-1)+","+str(cols+1)
-                  if move_string not in list_moves:
-                    list_moves.append(move_string)
-            
-            if rows-1 < 0:
-              if cols-1 < 0:
-                if self.board[rows-1][cols-1] == '-':
-                  move_string = str(rows-1)+","+str(cols-1)
-                  if move_string not in list_moves:
-                    list_moves.append(move_string)
-            
-            if cols+1 > self.number_of_columns-1:
-              if self.board[rows][cols+1] == '-':
-                move_string = rows+","+cols+1
-                if move_string not in list_moves:
-                  list_moves.append(move_string)
-            
-            if rows+1 > self.number_of_rows-1:
-              if self.board[rows+1][cols] == '-':
-                move_string = str(rows+1)+","+str(cols)
-                if move_string not in list_moves:
-                  list_moves.append(move_string)
-            
-            if rows+1 > self.number_of_rows-1:
-              if cols+1 > self.number_of_columns-1:
-                if self.board[rows+1][cols+1] == '-':
-                  move_string = str(rows+1)+","+str(cols)+1
-                  if move_string not in list_moves:
-                    list_moves.append(move_string)
+
+                if rows+1 <= self.number_of_rows-1:
+                    if cols-1 >= 0:
+                        if self.board[rows+1][cols-1] == '-':
+                            move_string = str(rows+1)+","+str(cols-1)
+                            if move_string not in list_moves:
+                                list_moves.append(move_string)
+                
+                if rows-1 >= 0:
+                  if self.board[rows-1][cols] == '-':
+                    move_string = str(rows-1)+","+str(cols)
+                    if move_string not in list_moves:
+                      list_moves.append(move_string)
+                
+                if rows-1 >= 0:
+                  if cols+1 <= self.number_of_columns-1:
+                    if self.board[rows-1][cols+1] == '-':
+                      move_string = str(rows-1)+","+str(cols+1)
+                      if move_string not in list_moves:
+                        list_moves.append(move_string)
+                
+                if rows-1 >= 0:
+                  if cols-1 >= 0:
+                    if self.board[rows-1][cols-1] == '-':
+                      move_string = str(rows-1)+","+str(cols-1)
+                      if move_string not in list_moves:
+                        list_moves.append(move_string)
+                
+                if cols+1 <= self.number_of_columns-1:
+                  if self.board[rows][cols+1] == '-':
+                    move_string = str(rows)+","+str(cols+1)
+                    if move_string not in list_moves:
+                      list_moves.append(move_string)
+                
+                if rows+1 <= self.number_of_rows-1:
+                  if self.board[rows+1][cols] == '-':
+                    move_string = str(rows+1)+","+str(cols)
+                    if move_string not in list_moves:
+                      list_moves.append(move_string)
+                
+                if rows+1 <= self.number_of_rows-1:
+                  if cols+1 <= self.number_of_columns-1:
+                    if self.board[rows+1][cols+1] == '-':
+                      move_string = str(rows+1)+","+str(cols+1)
+                      if move_string not in list_moves:
+                        list_moves.append(move_string)
         return list_moves
 
-    def minmax(self):
+    def minmax(self, max_depth, depth):
         moves = []
         scores = []
+        depth += 1
 
         # populate score
         for m in self.available_moves():
-            print(" --------- " + m)
+            print(" --------- " + m.split(",")[1])
             # create possible game state``
             possible_board = copy.deepcopy(self)
             # make m move on possible game state
-            possible_board.make_move(m[0], m[1])
+            possible_board.make_move(int(m.split(",")[0]), int(m.split(",")[1]))
             # get score of possible game state and push it to move
             scores.append(evaluate_state(possible_board))
             # push move to move
             moves.append(m)
 
+        print("moves: ", moves)
+        print("available moves: ", self.available_moves())
+        print("scores: ", scores)
+
         # do min max calculation
-
-
-
-
 
 
 # evaluation function
@@ -187,25 +191,25 @@ def evaluate_state(board_state):
     for row in board_state.board:
         for space in row:
             if space != '-':
-                print("================================\nrunning checks on [" + str(row_number+1) + "," + str(column_number+1) + "]")
+                #print("================================\nrunning checks on [" + str(row_number+1) + "," + str(column_number+1) + "]")
                 # check horizontals
-                print("------------------------\nStart of horizontal")
+                #print("------------------------\nStart of horizontal")
                 state_value += check_horizontal(board_state, row_number, column_number)
-                print("After running horizontal check: " + str(state_value))
+                #print("After running horizontal check: " + str(state_value))
                 # check verticals
-                print("------------------------\nStart of vertical")
+                #print("------------------------\nStart of vertical")
                 state_value += check_verticals(board_state, row_number, column_number)
-                print("After running verticals check: " + str(state_value))
+                #print("After running verticals check: " + str(state_value))
                 # check diagonals
                 # need to check both left and right diagonals
                 # check right
-                print("------------------------\nStart of right diag")
+                #print("------------------------\nStart of right diag")
                 state_value += check_diagonals_right(board_state, row_number, column_number)
-                print("After running right diagonals check: " + str(state_value))
+                #print("After running right diagonals check: " + str(state_value))
                 # check left
-                print("------------------------\nStart of left diag")
+                #print("------------------------\nStart of left diag")
                 state_value += check_diagonals_left(board_state, row_number, column_number)
-                print("After running left diagonals check: " + str(state_value))
+                #print("After running left diagonals check: " + str(state_value))
             # column number update
             column_number += 1
         # increment row number
@@ -218,8 +222,8 @@ def evaluate_state(board_state):
 # determine heuristic value of current row u
 # used by check_horizontals check_verticals check_diagonals in order to avoid repeating it each time
 def check_return_heuristic( number_in_row, open_status, same_player_status):
-    print("Values we are getting in check return are:\nnumber_in_rows: " + str(number_in_row) + "\nopen_status: "
-          + str(open_status) + "\nsame_player_status: "+str(same_player_status))
+    #print("Values we are getting in check return are:\nnumber_in_rows: " + str(number_in_row) + "\nopen_status: "
+          #+ str(open_status) + "\nsame_player_status: "+str(same_player_status))
     # if we have 4 in a row then this is a winning state, and we return 1000 to indicate this
     # (-1000 if winning state for opponent)
     if number_in_row == 4:
@@ -299,7 +303,7 @@ def check_verticals(board_state, row, column):
     # if row is zero and nothing is in front of it
     if row > 0 and board_state.board[row-1][column] == '-':
         open_status += 1
-    print("open status at start is: " + str(open_status))
+    #print("open status at start is: " + str(open_status))
     # if space before is same as current space, then we have already accounted for it being in a row
     # and do not need to run this function again (check to make sure we arent checking out of bounds)
     if row > 0 and board_state.board[row-1][column] == board_state.board[row][column]:
@@ -309,20 +313,20 @@ def check_verticals(board_state, row, column):
     while True:
         # if we reach the end of possible members of this row (out for board bounds)
         if row+number_in_row > board_state.number_of_rows-1:
-            print("we are entering out of bounds break")
+            #print("we are entering out of bounds break")
             break
         # if the next in row is same as current space then we have row of that value
         elif board_state.board[row][column] == board_state.board[row+number_in_row][column]:
-            print("we are entering row is good break")
+            #print("we are entering row is good break")
             number_in_row += 1
         # if next space is open indicate that and break while as there is no more row
         elif board_state.board[row+number_in_row][column] == '-':
-            print("we are entering end space is break")
+            #print("we are entering end space is break")
             open_status += 1
             break
         # only other condition is that the next space is other value so row is broken
         else:
-            print("we are entering row broken break")
+            #print("we are entering row broken break")
             break
     # need space value and the current player to finish evaluating, 0 means same as player, 1 is different
     same_player_status=0
@@ -340,35 +344,35 @@ def check_diagonals_right(board_state, row, column):
     if row > 0 and column > 0:
         if board_state.board[row-1][column-1] == '-':
             open_status += 1
-    print("open status at start is: " + str(open_status))
+    #print("open status at start is: " + str(open_status))
     # if space before is same as current space, then we have already accounted for it being in a row
     # and do not need to run this function again (check to make sure we are not checking out of bounds)
-    print(board_state.board[row - 1][column - 1])
-    print(board_state.board[row][column])
-    print(board_state.board[row - 1][column - 1] == board_state.board[row][column])
+    #print(board_state.board[row - 1][column - 1])
+    #print(board_state.board[row][column])
+    #print(board_state.board[row - 1][column - 1] == board_state.board[row][column])
     if row > 0 and column > 0:
         if board_state.board[row - 1][column - 1] == board_state.board[row][column]:
-            print("we are entering been there done that")
+            #print("we are entering been there done that")
             return 0
     number_in_row = 1
     # count number of same in a row
     while True:
         # if we reach the end of possible members of this row (out for board bounds)
         if row + number_in_row > board_state.number_of_rows-1 or column + number_in_row > board_state.number_of_columns-1:
-            print("we are entering out of bounds break")
+            #print("we are entering out of bounds break")
             break
         # if the next in row is same as current space then we have row of that value
         elif board_state.board[row][column] == board_state.board[row + number_in_row][column + number_in_row]:
-            print("we are entering row is good break")
+            #print("we are entering row is good break")
             number_in_row += 1
         # if next space is open indicate that and break while as there is no more row
         elif board_state.board[row + number_in_row][column + number_in_row] == '-':
-            print("we are entering end space is break")
+            #print("we are entering end space is break")
             open_status += 1
             break
         # only other condition is that the next space is other value so row is broken
         else:
-            print("we are entering row broken break")
+            #print("we are entering row broken break")
             break
     # need space value and the current player to finish evaluating, 0 means same as player, 1 is different
     same_player_status = 0
@@ -386,32 +390,32 @@ def check_diagonals_left(board_state, row, column):
     if row > 0 and column < board_state.number_of_columns-1:
         if board_state.board[row-1][column+1] == '-':
             open_status += 1
-    print("open status at start is: " + str(open_status))
+    #print("open status at start is: " + str(open_status))
     # if space before is same as current space, then we have already accounted for it being in a row
     # and do not need to run this function again (check to make sure we are not checking out of bounds)
     if row > 0 and column < board_state.number_of_columns-1:
         if board_state.board[row - 1][column + 1] == board_state.board[row][column]:
-            print("we are entering been there done that")
+            #print("we are entering been there done that")
             return 0
     number_in_row = 1
     # count number of same in a row
     while True:
         # if we reach the end of possible members of this row (out for board bounds)
         if row + number_in_row > board_state.number_of_rows-1 or column - number_in_row < 0:
-            print("we are entering out of bounds break")
+            #print("we are entering out of bounds break")
             break
         # if the next in row is same as current space then we have row of that value
         elif board_state.board[row][column] == board_state.board[row + number_in_row][column - number_in_row]:
-            print("we are entering row is good break")
+            #print("we are entering row is good break")
             number_in_row += 1
         # if next space is open indicate that and break while as there is no more row
         elif board_state.board[row + number_in_row][column - number_in_row] == '-':
-            print("we are entering end space is break")
+            #print("we are entering end space is break")
             open_status += 1
             break
         # only other condition is that the next space is other value so row is broken
         else:
-            print("we are entering row broken break")
+            #print("we are entering row broken break")
             break
     # need space value and the current player to finish evaluating, 0 means same as player, 1 is different
     same_player_status = 0
@@ -419,9 +423,6 @@ def check_diagonals_left(board_state, row, column):
         same_player_status = 1
     # evaluate the row value and return it
     return check_return_heuristic(number_in_row, open_status, same_player_status)
-
-
-
 
 # main
 def main():
@@ -451,7 +452,7 @@ def main():
     # print(game_board.current_player)
     # print(" \n\n" + str(value_of_state))
 
-    game_board.minmax()
+    game_board.minmax(2, 0)
 
 
 if __name__ == "__main__":
