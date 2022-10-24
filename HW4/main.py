@@ -154,7 +154,7 @@ class Board:
                         list_moves.append(move_string)
         return list_moves
 
-    def minmax(self, max_depth, depth):
+    def minmax(self, max_depth, depth, active_turn):
         moves = []
         scores = []
         depth += 1
@@ -173,13 +173,14 @@ class Board:
                 possible_board.current_player = 'X'
 
             if max_depth >= depth:
-              scores = possible_board.minmax(max_depth, depth)
+                scores = possible_board.minmax(max_depth, depth, active_turn)
             # get score of possible game state and push it to move
-            # scores.append(evaluate_state(possible_board))
+
+            # scores.append(evaluate_state(possible_board, active_turn))
             # push move to move
             moves.append(m)
 
-            if possible_board.current_player == current_player:
+            # if possible_board.current_player == current_player:
 
         print("moves: ", moves)
         print("available moves: ", self.available_moves())
@@ -191,7 +192,7 @@ class Board:
 # evaluation function
 # determines heuristic value of the given state based on the function given in the project documentation
 # takes a board state, and returns the heuristic value of that state
-def evaluate_state(board_state):
+def evaluate_state(board_state, current_player):
     # variable to hold heuristic value
     state_value = 0
     # check functions will evaluate based on [x,y] position of current space, track these values to pass to functions
@@ -204,21 +205,21 @@ def evaluate_state(board_state):
                 # print("================================\nrunning checks on [" + str(row_number+1) + "," + str(column_number+1) + "]")
                 # check horizontals
                 # print("------------------------\nStart of horizontal")
-                state_value += check_horizontal(board_state, row_number, column_number)
+                state_value += check_horizontal(board_state, row_number, column_number, current_player)
                 # print("After running horizontal check: " + str(state_value))
                 # check verticals
                 # print("------------------------\nStart of vertical")
-                state_value += check_verticals(board_state, row_number, column_number)
+                state_value += check_verticals(board_state, row_number, column_number, current_player)
                 # print("After running verticals check: " + str(state_value))
                 # check diagonals
                 # need to check both left and right diagonals
                 # check right
                 # print("------------------------\nStart of right diag")
-                state_value += check_diagonals_right(board_state, row_number, column_number)
+                state_value += check_diagonals_right(board_state, row_number, column_number, current_player)
                 # print("After running right diagonals check: " + str(state_value))
                 # check left
                 # print("------------------------\nStart of left diag")
-                state_value += check_diagonals_left(board_state, row_number, column_number)
+                state_value += check_diagonals_left(board_state, row_number, column_number, current_player)
                 # print("After running left diagonals check: " + str(state_value))
             # column number update
             column_number += 1
@@ -270,7 +271,7 @@ def check_return_heuristic( number_in_row, open_status, same_player_status):
 
 
 # evaluate all the horizontals of current board states
-def check_horizontal(board_state, row, column):
+def check_horizontal(board_state, row, column, current_player):
     # check if open
     open_status = 0
     # if space before is - then it is open, and we track this
@@ -299,14 +300,14 @@ def check_horizontal(board_state, row, column):
             break
     # need space value and the current player to finish evaluating, 0 means same as player, 1 is different
     same_player_status=0
-    if board_state.current_player != board_state.board[row][column]:
+    if current_player != board_state.board[row][column]:
         same_player_status = 1
     # evaluate the row value and return it
     return check_return_heuristic(number_in_row, open_status, same_player_status)
 
 
 # check vertical axis of space for rows, similar to check_horizontals
-def check_verticals(board_state, row, column):
+def check_verticals(board_state, row, column, current_player):
     # check if open
     open_status = 0
     # if space before is - then it is open, and we track this
@@ -340,13 +341,13 @@ def check_verticals(board_state, row, column):
             break
     # need space value and the current player to finish evaluating, 0 means same as player, 1 is different
     same_player_status=0
-    if board_state.current_player != board_state.board[row][column]:
+    if current_player != board_state.board[row][column]:
         same_player_status = 1
     # evaluate the row value and return it
     return check_return_heuristic(number_in_row, open_status, same_player_status)
 
 
-def check_diagonals_right(board_state, row, column):
+def check_diagonals_right(board_state, row, column, current_player):
     # check if open
     open_status = 0
     # if space before is - then it is open, and we track this
@@ -386,13 +387,13 @@ def check_diagonals_right(board_state, row, column):
             break
     # need space value and the current player to finish evaluating, 0 means same as player, 1 is different
     same_player_status = 0
-    if board_state.current_player != board_state.board[row][column]:
+    if current_player != board_state.board[row][column]:
         same_player_status = 1
     # evaluate the row value and return it
     return check_return_heuristic(number_in_row, open_status, same_player_status)
 
 
-def check_diagonals_left(board_state, row, column):
+def check_diagonals_left(board_state, row, column, current_player):
     # check if open
     open_status = 0
     # if space before is - then it is open, and we track this
@@ -429,7 +430,7 @@ def check_diagonals_left(board_state, row, column):
             break
     # need space value and the current player to finish evaluating, 0 means same as player, 1 is different
     same_player_status = 0
-    if board_state.current_player != board_state.board[row][column]:
+    if current_player != board_state.board[row][column]:
         same_player_status = 1
     # evaluate the row value and return it
     return check_return_heuristic(number_in_row, open_status, same_player_status)
@@ -464,7 +465,7 @@ def main():
     # print(game_board.current_player)
     # print(" \n\n" + str(value_of_state))
 
-    game_board.minmax(2, 0)
+    game_board.minmax(2, 0, 'X')
 
     # game_board.make_move(1, 1)
     # game_board.current_player = 'O'
