@@ -6,6 +6,7 @@ from time import process_time
 nodes_created = 0
 total_nodes_created = 0
 
+
 # board class
 class Board:
     # constructor
@@ -20,9 +21,10 @@ class Board:
     number_of_rows = 5
     number_of_columns = 6
     turn_number = 1
-    node_number =0
+    node_number = 0
+
     # reset_board
-    # sets the game board to its starting state described in the project document
+    # sets the game board zero
     def reset_board(self):
         self.board = []
         for i in range(self.number_of_rows):
@@ -30,10 +32,6 @@ class Board:
             for j in range(self.number_of_columns):
                 row.append('-')
             self.board.append(row)
-        # reset number of turns to 0
-        self.turn_number = 1
-        # make the first move as specified in the project document
-        # project doc is indexed from 1, while we are indexing at 0 so subtract one
 
     # make move
     # has the current player make a move. Mark the requested space and then swap player
@@ -546,10 +544,10 @@ def main():
     game_board = Board()
 
     # SET UP STATES
+    # ASSIGNMENT STATE
     game_board.make_move(3 - 1, 4 - 1)
     game_board.make_move(3 - 1, 3 - 1)
     game_board.current_player = 'X'
-    # ASIIGNMENT STATE
 
     # EXAMPLE #! (state from project file)
     # game_board.current_player = 'O'
@@ -569,7 +567,6 @@ def main():
 
     # Play a Game
     play_a_game(game_board)
-
 
 
 if __name__ == "__main__":
