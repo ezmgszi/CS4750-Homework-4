@@ -166,6 +166,10 @@ class Board:
             possible_board = copy.deepcopy(self)
             # make m move on possible game state
             possible_board.make_move(int(m.split(",")[0]), int(m.split(",")[1]))
+            if possible_board.current_player == 'X':
+                possible_board.current_player = 'O'
+            else:
+                possible_board.current_player = 'X'
             # get score of possible game state and push it to move
             scores.append(evaluate_state(possible_board))
             # push move to move
@@ -191,25 +195,25 @@ def evaluate_state(board_state):
     for row in board_state.board:
         for space in row:
             if space != '-':
-                #print("================================\nrunning checks on [" + str(row_number+1) + "," + str(column_number+1) + "]")
+                print("================================\nrunning checks on [" + str(row_number+1) + "," + str(column_number+1) + "]")
                 # check horizontals
-                #print("------------------------\nStart of horizontal")
+                print("------------------------\nStart of horizontal")
                 state_value += check_horizontal(board_state, row_number, column_number)
-                #print("After running horizontal check: " + str(state_value))
+                print("After running horizontal check: " + str(state_value))
                 # check verticals
-                #print("------------------------\nStart of vertical")
+                print("------------------------\nStart of vertical")
                 state_value += check_verticals(board_state, row_number, column_number)
-                #print("After running verticals check: " + str(state_value))
+                print("After running verticals check: " + str(state_value))
                 # check diagonals
                 # need to check both left and right diagonals
                 # check right
-                #print("------------------------\nStart of right diag")
+                print("------------------------\nStart of right diag")
                 state_value += check_diagonals_right(board_state, row_number, column_number)
-                #print("After running right diagonals check: " + str(state_value))
+                print("After running right diagonals check: " + str(state_value))
                 # check left
-                #print("------------------------\nStart of left diag")
+                print("------------------------\nStart of left diag")
                 state_value += check_diagonals_left(board_state, row_number, column_number)
-                #print("After running left diagonals check: " + str(state_value))
+                print("After running left diagonals check: " + str(state_value))
             # column number update
             column_number += 1
         # increment row number
@@ -442,6 +446,8 @@ def main():
     game_board.current_player = 'O'
     game_board.make_move(2, 3)
     game_board.current_player = 'X'
+    # game_board.make_move(1, 5)
+    # game_board.current_player = 'X'
     game_board.print_board()
 
     # print(game_board.board)
@@ -453,6 +459,14 @@ def main():
     # print(" \n\n" + str(value_of_state))
 
     game_board.minmax(2, 0)
+
+    game_board.make_move(1, 1)
+    game_board.current_player = 'O'
+
+    game_board.print_board()
+    value_of_state = evaluate_state(game_board)
+    print(game_board.current_player)
+    print(" \n\n" + str(value_of_state))
 
 
 if __name__ == "__main__":
