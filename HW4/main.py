@@ -36,7 +36,7 @@ class Board:
     # make move
     # has the current player make a move. Mark the requested space and then swap player
     def make_move(self, row, column):
-        self.print_board()
+        #self.print_board()
         print("*Player " + str(self.current_player) + " is making the move [" + str(row+1) + "," + str(column+1) + "]")
         self.board[row][column] = self.current_player
         self.swap_player_turn()
@@ -154,31 +154,66 @@ class Board:
                         list_moves.append(move_string)
         return list_moves
 
+    def initMinMax(self, max_depth, depth, active_turn):
+      best_move = "-1,-1"
+      score = -100000
+      depth += 1
+      current_player = self.current_player
+
+      # populate score
+      for m in self.available_moves():
+          print(" --------- " + m.split(",")[1])
+          # create possible game state``
+          possible_board = copy.deepcopy(self)
+          # make m move on possible game state
+          possible_board.make_move(int(m.split(",")[0]), int(m.split(",")[1]))
+          passed_turn = possible_board.current_player
+          if possible_board.current_player == 'X':
+              possible_board.current_player = 'O'
+          else:
+              possible_board.current_player = 'X'
+
+          if max_depth >= depth:
+            candidate_score = possible_board.minmax(max_depth, depth, passed_turn)
+            if score < candidate_score:
+              score = candidate_score
+              best_move = m
+          print("best move: ", best_move)
+      return best_move
+              
+
     def minmax(self, max_depth, depth, active_turn):
-        moves = []
-        scores = []
-        depth += 1
-        current_player = self.current_player
+      moves = []
+      scores = []
+      depth += 1
+      current_player = self.current_player
 
-        # populate score
-        for m in self.available_moves():
-            print(" --------- " + m.split(",")[1])
-            # create possible game state``
-            possible_board = copy.deepcopy(self)
-            # make m move on possible game state
-            possible_board.make_move(int(m.split(",")[0]), int(m.split(",")[1]))
-            if possible_board.current_player == 'X':
-                possible_board.current_player = 'O'
-            else:
-                possible_board.current_player = 'X'
+      # populate score
+      for m in self.available_moves():
+        #print(" --------- " + m.split(",")[1])
+        # create possible game state``
+        possible_board = copy.deepcopy(self)
+        # make m move on possible game state
+        possible_board.make_move(int(m.split(",")[0]), int(m.split(",")[1]))
+        passed_turn = possible_board.current_player
+        if possible_board.current_player == 'X':
+            possible_board.current_player = 'O'
+        else:
+            possible_board.current_player = 'X'
 
-            if max_depth >= depth:
-                scores = possible_board.minmax(max_depth, depth, active_turn)
-            # get score of possible game state and push it to move
+        if max_depth >= depth:
+            scores.append(possible_board.minmax(max_depth, depth, passed_turn))
+        # get score of possible game state and push it to move
+        moves.append(m)
 
-            # scores.append(evaluate_state(possible_board, active_turn))
-            # push move to move
-            moves.append(m)
+      scores.append(evaluate_state(possible_board, active_turn))
+      # push move to move
+      if active_turn == possible_board.current_player:
+        # max score
+        return max(scores)
+      else:
+        return min(scores)
+              # min scores
 
             # if possible_board.current_player == current_player:
 
@@ -465,7 +500,7 @@ def main():
     # print(game_board.current_player)
     # print(" \n\n" + str(value_of_state))
 
-    game_board.minmax(2, 0, 'X')
+    print(game_board.initMinMax(2, 0, 'X'))
 
     # game_board.make_move(1, 1)
     # game_board.current_player = 'O'
