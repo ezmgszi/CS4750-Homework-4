@@ -115,32 +115,6 @@ class Board:
                             if move_string not in list_moves:
                                 list_moves.append(move_string)
                 
-                if rows-1 >= 0:
-                  if self.board[rows-1][cols] == '-':
-                    move_string = str(rows-1)+","+str(cols)
-                    if move_string not in list_moves:
-                      list_moves.append(move_string)
-                
-                if rows-1 >= 0:
-                  if cols+1 <= self.number_of_columns-1:
-                    if self.board[rows-1][cols+1] == '-':
-                      move_string = str(rows-1)+","+str(cols+1)
-                      if move_string not in list_moves:
-                        list_moves.append(move_string)
-                
-                if rows-1 >= 0:
-                  if cols-1 >= 0:
-                    if self.board[rows-1][cols-1] == '-':
-                      move_string = str(rows-1)+","+str(cols-1)
-                      if move_string not in list_moves:
-                        list_moves.append(move_string)
-                
-                if cols+1 <= self.number_of_columns-1:
-                  if self.board[rows][cols+1] == '-':
-                    move_string = str(rows)+","+str(cols+1)
-                    if move_string not in list_moves:
-                      list_moves.append(move_string)
-                
                 if rows+1 <= self.number_of_rows-1:
                   if self.board[rows+1][cols] == '-':
                     move_string = str(rows+1)+","+str(cols)
@@ -153,6 +127,33 @@ class Board:
                       move_string = str(rows+1)+","+str(cols+1)
                       if move_string not in list_moves:
                         list_moves.append(move_string)
+
+                if cols+1 <= self.number_of_columns-1:
+                  if self.board[rows][cols+1] == '-':
+                    move_string = str(rows)+","+str(cols+1)
+                    if move_string not in list_moves:
+                      list_moves.append(move_string)
+
+                if rows-1 >= 0:
+                  if cols+1 <= self.number_of_columns-1:
+                    if self.board[rows-1][cols+1] == '-':
+                      move_string = str(rows-1)+","+str(cols+1)
+                      if move_string not in list_moves:
+                        list_moves.append(move_string)
+
+                if rows-1 >= 0:
+                  if self.board[rows-1][cols] == '-':
+                    move_string = str(rows-1)+","+str(cols)
+                    if move_string not in list_moves:
+                      list_moves.append(move_string)
+                      
+                if rows-1 >= 0:
+                  if cols-1 >= 0:
+                    if self.board[rows-1][cols-1] == '-':
+                      move_string = str(rows-1)+","+str(cols-1)
+                      if move_string not in list_moves:
+                        list_moves.append(move_string)
+                
         return list_moves
 
     def initMinMax(self, max_depth, depth, active_turn):
