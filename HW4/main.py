@@ -176,15 +176,16 @@ class Board:
             if max_depth >= depth:
                 candidate_score = possible_board.minmax(max_depth, depth, passed_turn)
             # print(score)
+            # print("minmax reutrns best move" , m , "heursitc value of board after this move is " + str(evaluate_state(possible_board, active_turn)) )
+            # print("Candidate score returned by min max:   " + str(candidate_score) +"\n Score currently has a value of:    " + str(score))
             if score < candidate_score:
                 score = candidate_score
-                # print(score)
+                # print("candidate score is being changed to: " + str(score))
                 best_move = m
         # print(score)
         # print("best move: ", best_move)
         # print()
         return best_move
-              
 
     def minmax(self, max_depth, depth, active_turn):
         global nodes_created
@@ -202,9 +203,9 @@ class Board:
         else:
             self.current_player = 'X'
         # populate score
-        if heuristic_value > 900:
-            return heuristic_value
-        if max_depth >= depth and heuristic_value < 1000:
+        # if heuristic_value > 700:
+        #     return heuristic_value
+        if max_depth >= depth:
             for m in self.available_moves():
                 # print(" --------- " + m.split(",")[1])
                 # create possible game state``
@@ -225,12 +226,14 @@ class Board:
         if active_turn == passed_turn:
             # max score
             # heuristic value has all values of possible board states of all possible moves`
-            return max(scores)
-        else:
+            # return max(scores)
             return min(scores)
-              # min scores
+        else:
+            # return min(scores)
+            return max(scores)
+        # min scores
 
-            # if possible_board.current_player == current_player:
+         # if possible_board.current_player == current_player:
 
         # print("moves: ", moves)
         # print("available moves: ", self.available_moves())
@@ -537,6 +540,45 @@ def play_a_game(board):
           + "\nTotal runtime of game: ", str(t1_stop - t1_start) + " seconds")
     # if someone wins
 
+def play_a_game_turn_8(board):
+    i = 1
+    while i < 7:
+        i += 1
+        board.print_board()
+        max_depth = 0
+        if board.current_player == 'X':
+            # print(evaluate_state(board, 'X'))
+            if evaluate_state(board, 'X') > 700:
+                winner = 'Player X'
+                break
+            elif evaluate_state(board, 'X') < -700:
+                winner = 'Player O'
+                break
+            max_depth = 2
+        else:
+            # print(evaluate_state(board, 'O'))
+            if evaluate_state(board, 'O') > 700:
+                winner = 'Player O'
+                break
+            elif evaluate_state(board, 'O') < -700:
+                winner = 'Player X'
+                break
+            max_depth = 4
+        # determine best move using minimax
+        # t2_start = process_time()
+        best_move = board.initMinMax(max_depth, 0, board.current_player)
+        # t2_stop = process_time()
+        print("* Player " + str(board.current_player) + " is making the move [" + str(int(best_move.split(",")[0]))
+              + "," + str(best_move.split(",")[1]) + "]\n*    Player " + str(board.current_player)
+              + " is running minimax algorithm on a " + str(max_depth))
+              # + "-ply game tree\n*    total nodes created by minimax for this move: "
+              # + str(nodes_created) + "\n*    Elapse time: " + str(t2_stop - t2_start) + " seconds")
+        # # update node tracking globals
+        # total_nodes_created += nodes_created
+        # nodes_created = 0
+
+        board.make_move(int(best_move.split(",")[0]), int(best_move.split(",")[1]))
+
 
 # main
 def main():
@@ -564,10 +606,23 @@ def main():
     # game_board.make_move(2, 4)
     # game_board.current_player = 'X'
 
+    # print(evaluate_state(game_board,"X"))
+    # print(evaluate_state(game_board, "O"))
     # EXAMPLE #2
+
 
     # Play a Game
     play_a_game(game_board)
+    # play_a_game_turn_8(game_board)
+    # game_board.print_board()
+    # for m in game_board.available_moves():
+    #     possible_board = copy.deepcopy(game_board)
+    #     # make m move on possible game state
+    #     possible_board.make_move(int(m.split(",")[0]), int(m.split(",")[1]))
+    #     print("* Player " + str('O') + " is making the move [" + str(int(m.split(",")[0]))
+    #           + "," + str(int(m.split(",")[1])) + "]")
+    #     print(evaluate_state(possible_board, 'O'))
+
 
 
 if __name__ == "__main__":
